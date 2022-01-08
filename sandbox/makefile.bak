@@ -21,11 +21,8 @@ else
 endif
 
 C_COMPILER=gcc
-ifeq ($(shell uname -s), Darwin)
- C_COMPILER=clang
-endif
 
-UNITY_ROOT= C:\Unity
+UNITY_ROOT= /home/matt/Unity
 
 CFLAGS=-std=c99
 CFLAGS += -Wall
@@ -49,7 +46,7 @@ SRC_FILES1=\
   $(UNITY_ROOT)/src/unity.c \
   $(UNITY_ROOT)/extras/fixture/src/unity_fixture.c \
   $(UNITY_ROOT)/extras/memory/src/unity_memory.c \
-  unity/LedDriver/LedDriverTest.c
+  ./unity_tests/LedDriver/LedDriverTest.c \
   #src/ProductionCode.c \
   # src/ProductionCode2.c \
   #test/TestProductionCode.c \
@@ -57,14 +54,22 @@ SRC_FILES1=\
   #test/test_runners/TestProductionCode_Runner.c \
   # test/test_runners/TestProductionCode2_Runner.c \
   #test/test_runners/all_tests.c
-INC_DIRS=-Isrc -I$(UNITY_ROOT)/src -I$(UNITY_ROOT)/extras/fixture/src -I$(UNITY_ROOT)/extras/memory/src
-SYMBOLS=
+INC_DIRS= \
+  -Isrc \
+  -I$(UNITY_ROOT)/src/\
+  -I$(UNITY_ROOT)/extras/fixture/src \
+  -I$(UNITY_ROOT)/extras/fixture/test \
+  -I$(UNITY_ROOT)/extras/memory/src \
+  
+SYMBOLS=-DUNITY_FIXTURE_NO_EXTRAS
+
 
 all: clean default
 
 default: $(SRC_FILES1)
 	$(C_COMPILER) $(CFLAGS) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES1) -o $(TARGET1)
-	- ./$(TARGET1) -v
+	- ./$(TARGET1) -vdefault: $(SRC_FILES1)
+
 
 clean:
 	$(CLEANUP) $(TARGET1)
